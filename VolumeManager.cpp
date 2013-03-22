@@ -60,8 +60,8 @@ VolumeManager::VolumeManager() {
     mBroadcaster = NULL;
     mUmsSharingCount = 0;
     mSavedDirtyRatio = -1;
-    // set dirty ratio to 0 when UMS is active
-    mUmsDirtyRatio = 0;
+    // set dirty ratio to 20 when UMS is active
+    mUmsDirtyRatio = 20;
     mVolManagerDisabled = 0;
 }
 
