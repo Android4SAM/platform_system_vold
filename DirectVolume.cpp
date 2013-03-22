@@ -277,6 +277,21 @@ void DirectVolume::handleDiskRemoved(const char *devpath, NetlinkEvent *evt) {
     char msg[255];
 
     SLOGD("Volume %s %s disk %d:%d removed\n", getLabel(), getMountpoint(), major, minor);
+
+    // If No partitions, we need do unmountVol
+    if (mDiskNumParts == 0) {
+        if (mVm->cleanupAsec(this, true)) {
+            SLOGE("Failed to cleanup ASEC - unmount will probably fail!");
+        }
+
+        if (Volume::unmountVol(true, false)) {
+            SLOGE("Failed to unmount volume on bad removal (%s)",
+                strerror(errno));
+        } else {
+            SLOGD("Crisis averted");
+        }
+    }
+
     snprintf(msg, sizeof(msg), "Volume %s %s disk removed (%d:%d)",
              getLabel(), getMountpoint(), major, minor);
     mVm->getBroadcaster()->sendBroadcast(ResponseCode::VolumeDiskRemoved,
